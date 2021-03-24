@@ -1,0 +1,4 @@
+
+- an automated build system
+- proper file output code
+- different render file types
