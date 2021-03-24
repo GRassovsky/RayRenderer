@@ -1,36 +1,49 @@
+// System includes
 #include <iostream>
 #include <fstream>
 
+// Project includes
+#include "vec3.h"
+#include "color.h"
+
+
+
+// Debug macro
 #define DEBUG 0
+
+
+
 
 int main()
 {
-	int nx = 200;
-	int ny = 100;
+	const int image_width = 256;
+	const int image_height = 256;
+
 
 	std::ofstream outfile( "render.ppm", std::ios_base::out);
-	outfile << "P3\n" << nx << " " << ny << "\n255\n";
 
+	outfile << "P3\n" << image_width << " " << image_height << "\n255\n";
 #if DEBUG
-	std::cout << "P3\n" << nx << " " << ny << "\n255\n";
+	std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
 #endif
 
-	for( int j = ny-1; j >= 0; --j )
+
+	for( int j = image_height-1; j >= 0; --j )
 	{
-		for( int i = 0; i < nx; ++i )
+		std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
+
+		for( int i = 0; i < image_width; ++i )
 		{
-			float r = float(i) / float(nx);
-			float g = float(j) / float(ny);
-			float b = 0.2f;
+			color pixel_color{	static_cast<float>(i) / static_cast<float>(image_width-1), 
+								static_cast<float>(j) / static_cast<float>(image_height-1),
+								0.25f };
 
-			int ir = int(255.99 * r);
-			int ig = int(255.99 * g);
-			int ib = int(255.99 * b);
-
-			outfile << ir << " " << ig << " " << ib << std::endl;
+			write_color(outfile, pixel_color);
 #if DEBUG
-			std::cout << ir << " " << ig << " " << ib << std::endl;
+			write_color(std::cout, pixel_color);
 #endif
 		}
 	}
+
+	std::cerr << "\nDone.\n";
 }
